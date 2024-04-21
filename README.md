@@ -2,7 +2,8 @@
 <p align="center">
   <img src="https://i.postimg.cc/4yX4vXCZ/Boruto.png" href="">
 </p>
-Boruto Server is the back-end application for Boruto Application.
+
+Boruto Server is the back-end application for [Boruto Application](https://github.com/GreyWolf2020/BorutoApp).
 The application lists popular characters from Boruto, a famous Japanese manga.
 The application was built with Ktor.
 
