@@ -28,8 +28,8 @@ Execute this instruction to run the application:
 ```
 
 ## API Endpoints
-| HTTP Verbs | Endpoints | Action                                  |
-| ---   | - |-----------------------------------------|
-| GET | / | Welcome message                         |
-| GET | /boruto/heroes | To retrieve a paginated list of  heroes |
-| GET | /boruto/heroes/search | To retreive a list of searched heroes   |
+| HTTP Verbs | Endpoints | Action                                                                                                                                |
+| ---   | - |---------------------------------------------------------------------------------------------------------------------------------------|
+| GET | / | Welcome message                                                                                                                       |
+| GET | /boruto/heroes | To retrieve a list of heroes. Pagination is powered exclusively by the <mark style="background-color: #D3D3D3">page</mark> parameter. |
+| GET | /boruto/heroes/search | To retreive a list of searched heroes                                                                                                 |
