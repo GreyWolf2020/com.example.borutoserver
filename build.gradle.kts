@@ -4,9 +4,9 @@ val logbackVersion: String by project
 val koinKtor: String by project
 
 plugins {
-    kotlin("jvm") version "1.8.10"
+    kotlin("jvm") version "2.0.0"
     id("io.ktor.plugin") version "2.2.4"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
 }
 
 group = "com.example"
@@ -21,6 +21,13 @@ application {
 repositories {
     mavenCentral()
 }
+
+kotlin {
+    compilerOptions {
+        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+    }
+}
+
 
 dependencies {
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
@@ -39,4 +46,10 @@ dependencies {
     // SLF4J Logger
     implementation("io.insert-koin:koin-logger-slf4j:$koinKtor")
     implementation("io.ktor:ktor-server-default-headers:$ktorVersion")
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(18))
+    }
 }

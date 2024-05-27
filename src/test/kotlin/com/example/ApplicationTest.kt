@@ -9,6 +9,8 @@ import kotlin.test.*
 import io.ktor.http.*
 import com.example.plugins.*
 import com.example.repository.HeroRepository
+import com.example.repository.NEXT_PAGE_KEY
+import com.example.repository.PREVIOUS_PAGE_KEY
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.koin.java.KoinJavaComponent.inject
@@ -136,24 +138,10 @@ class ApplicationTest {
     }
 
     private fun calculatePage(page: Int): Map<String, Int?> {
-        var prevPage: Int? = page
-        var nextPage: Int? = page
-        if(page in 1 .. 4) {
-            nextPage = nextPage?.plus(1)
-        }
-        if (page in  2 .. 5) {
-            prevPage = prevPage?.minus(1)
-        }
-        if (page == 1) {
-            prevPage = null
-        }
-        if (page == 5) {
-            nextPage = null
-        }
-        return mapOf(
-            "prevPage" to prevPage,
-            "nextPage" to nextPage
-        )
+       return mapOf(
+           PREVIOUS_PAGE_KEY to if (page in 2 .. 5) page.minus(1) else null,
+           NEXT_PAGE_KEY to if (page in 1 .. 4) page.plus(1) else null
+       )
     }
 
 
@@ -233,7 +221,7 @@ class ApplicationTest {
 
 
     @Test
-    fun `access non existing endpoint, assertnot found`() = testApplication {
+    fun `access non existing endpoint, assert not found`() = testApplication {
         environment {
             developmentMode = false
         }
