@@ -38,21 +38,21 @@ class ApplicationTest {
         application {
             configureRouting()
         }
-        client.get("/boruto/heroes").apply {
-            assertEquals(HttpStatusCode.OK, status)
-            val actual = Json.decodeFromString<ApiResponse>(bodyAsText())
-            val expected = ApiResponse(
-                success = true,
-                message = "ok",
-                prevPage = null,
-                nextPage = 2,
-                heroes = heroRepository.page01,
-                lastUpdated = actual.lastUpdated
-            )
-            println("Expected: $expected")
-            println("Actual: $actual")
-            assertEquals(expected, actual)
-        }
+        val response = client.get("/boruto/heroes")
+        assertEquals(HttpStatusCode.OK, response.status)
+        val actual = Json.decodeFromString<ApiResponse>(response.bodyAsText())
+        val expected = ApiResponse(
+            success = true,
+            message = "ok",
+            prevPage = null,
+            nextPage = 2,
+            heroes = heroRepository.page01,
+            lastUpdated = actual.lastUpdated
+        )
+        println("Expected: $expected")
+        println("Actual: $actual")
+        assertEquals(expected, actual)
+
     }
 
     @Test
@@ -72,26 +72,25 @@ class ApplicationTest {
             { heroRepository.page05 }
         )
         pages.forEach { page ->
-            client.get("/boruto/heroes?page=$page").apply {
-                assertEquals(
-                    expected = HttpStatusCode.OK,
-                    actual = status
-                )
-                val actual = Json.decodeFromString<ApiResponse>(bodyAsText())
-                val expected = ApiResponse(
-                    success = true,
-                    message = "ok",
-                    nextPage = calculatePage(page = page)["nextPage"],
-                    prevPage = calculatePage(page = page)["prevPage"],
-                    heroes = heroes[page - 1](),
-                    lastUpdated = actual.lastUpdated
-                )
+            val response = client.get("/boruto/heroes?page=$page")
+            assertEquals(
+                expected = HttpStatusCode.OK,
+                actual = response.status
+            )
+            val actual = Json.decodeFromString<ApiResponse>(response.bodyAsText())
+            val expected = ApiResponse(
+                success = true,
+                message = "ok",
+                nextPage = calculatePage(page = page)["nextPage"],
+                prevPage = calculatePage(page = page)["prevPage"],
+                heroes = heroes[page - 1](),
+                lastUpdated = actual.lastUpdated
+            )
 
-                assertEquals(
-                    expected = expected,
-                    actual = actual
-                )
-            }
+            assertEquals(
+                expected = expected,
+                actual = actual
+            )
         }
     }
 
@@ -103,7 +102,7 @@ class ApplicationTest {
         application {
             configureRouting()
         }
-        client.get("/boruto/heroes?page=6").apply {
+        client.get("/boruto/heroes?page=6").run {
             assertEquals(HttpStatusCode.NotFound, status)
 //            val expected = ApiResponse(
 //                success = false,
@@ -124,17 +123,16 @@ class ApplicationTest {
         application {
             configureRouting()
         }
-        client.get("/boruto/heroes?page=invalid").apply {
-            assertEquals(HttpStatusCode.BadRequest, status)
-            val expected = ApiResponse(
-                success = false,
-                message = "Only Numbers Allowed"
-            )
-            val actual = Json.decodeFromString<ApiResponse>(bodyAsText())
-            println("Expected: $expected")
-            println("Actual: $actual")
-            assertEquals(expected, actual)
-        }
+        val response = client.get("/boruto/heroes?page=invalid")
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+        val expected = ApiResponse(
+            success = false,
+            message = "Only Numbers Allowed"
+        )
+        val actual = Json.decodeFromString<ApiResponse>(response.bodyAsText())
+        println("Expected: $expected")
+        println("Actual: $actual")
+        assertEquals(expected, actual)
     }
 
     private fun calculatePage(page: Int): Map<String, Int?> {
@@ -153,7 +151,7 @@ class ApplicationTest {
         application {
             configureRouting()
         }
-        client.get("/boruto/heroes/search?name=sas").apply {
+        client.get("/boruto/heroes/search?name=sas").run {
             assertEquals(HttpStatusCode.OK, status)
             val expected = 1
             val actual = Json.decodeFromString<ApiResponse>(bodyAsText()).heroes.size
@@ -172,7 +170,7 @@ class ApplicationTest {
         application {
             configureRouting()
         }
-        client.get("/boruto/heroes/search?name=sa").apply {
+        client.get("/boruto/heroes/search?name=sa").run {
             assertEquals(HttpStatusCode.OK, status)
             val expected = 3
             val actual = Json.decodeFromString<ApiResponse>(bodyAsText()).heroes.size
@@ -191,14 +189,13 @@ class ApplicationTest {
         application {
             configureRouting()
         }
-        client.get("/boruto/heroes/search?name").apply {
-            assertEquals(HttpStatusCode.OK, status)
-            val expected = emptyList<Hero>()
-            val actual = Json.decodeFromString<ApiResponse>(bodyAsText()).heroes
-            println("Expected: $expected")
-            println("Actual: $actual")
-            assertEquals(expected, actual)
-        }
+    val response = client.get("/boruto/heroes/search?name")
+        assertEquals(HttpStatusCode.OK, response.status)
+        val expected = emptyList<Hero>()
+        val actual = Json.decodeFromString<ApiResponse>(response.bodyAsText()).heroes
+        println("Expected: $expected")
+        println("Actual: $actual")
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -209,7 +206,7 @@ class ApplicationTest {
         application {
             configureRouting()
         }
-        client.get("/boruto/heroes/search?name=unkown").apply {
+        client.get("/boruto/heroes/search?name=unkown").run {
             assertEquals(HttpStatusCode.OK, status)
             val expected = emptyList<Hero>()
             val actual = Json.decodeFromString<ApiResponse>(bodyAsText()).heroes
@@ -228,14 +225,14 @@ class ApplicationTest {
         application {
             configureRouting()
         }
-        client.get("/unkown").apply {
-            assertEquals(HttpStatusCode.NotFound, status)
-            /*val expected = "page not found"
-            val actual = Json.decodeFromString<ApiResponse>(bodyAsText()).message
-            println("Expected: $expected")
-            println("Actual: $actual")
-            assertEquals(expected, actual)*/
-        }
+        val response = client.get("/unkown")
+        assertEquals(HttpStatusCode.NotFound, response.status)
+        /*val expected = "page not found"
+        val actual = Json.decodeFromString<ApiResponse>(bodyAsText()).message
+        println("Expected: $expected")
+        println("Actual: $actual")
+        assertEquals(expected, actual)*/
+
     }
 
 
